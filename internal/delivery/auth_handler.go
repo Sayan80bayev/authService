@@ -1,7 +1,7 @@
 package delivery
 
 import (
-	"go_crud_example/internal/service"
+	"authService/internal/services"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

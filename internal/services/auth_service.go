@@ -1,9 +1,9 @@
 package service
 
 import (
+	"authService/internal/models"
+	"authService/internal/repository"
 	"errors"
-	"go_crud_example/internal/models"
-	"go_crud_example/internal/repository"
 
 	"time"
 

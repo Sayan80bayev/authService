@@ -1,11 +1,11 @@
 package routes
 
 import (
+	"authService/internal/config"
+	"authService/internal/delivery"
+	"authService/internal/repository"
+	"authService/internal/services"
 	"github.com/gin-gonic/gin"
-	"go_crud_example/internal/config"
-	"go_crud_example/internal/delivery"
-	"go_crud_example/internal/repository"
-	"go_crud_example/internal/service"
 	"gorm.io/gorm"
 )
 
@@ -15,6 +15,6 @@ func SetupAuthRoutes(r *gin.Engine, db *gorm.DB, cfg *config.Config) {
 	authHandler := delivery.NewAuthHandler(authService)
 
 	// Роуты для аутентификации
-	r.POST("/register", authHandler.Register)
-	r.POST("/auth", authHandler.Login)
+	r.POST("/api/v1/register", authHandler.Register)
+	r.POST("/api/v1/auth", authHandler.Login)
 }
