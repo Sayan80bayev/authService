@@ -1,10 +1,11 @@
 package config
 
 import (
-	"log"
-
+	"authService/pkg/logging"
 	"github.com/spf13/viper"
 )
+
+var logger = logging.GetLogger()
 
 type Config struct {
 	DatabaseURL string `mapstructure:"DATABASE_URL"`
@@ -17,7 +18,7 @@ func LoadConfig() (*Config, error) {
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err != nil {
-		log.Printf("Не удалось загрузить config.yaml: %v", err)
+		logger.Error("Не удалось загрузить config.yaml: %v", err)
 	}
 
 	var cfg Config

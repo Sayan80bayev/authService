@@ -6,31 +6,37 @@ import (
 	"authService/pkg/logging"
 	"gorm.io/driver/postgres"
 
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"log"
 )
+
+var logger = logging.GetLogger()
 
 func main() {
 	cfg, err := config.LoadConfig()
 	if err != nil {
-		fmt.Println("Error loading config:", err)
+		logger.Error("Error loading config:", err)
 		return
 	}
 
 	db, err := gorm.Open(postgres.Open(cfg.DatabaseURL), &gorm.Config{})
 	if err != nil {
-		log.Fatal("Ошибка подключения к базе данных:", err)
+		logger.Error("Ошибка подключения к базе данных:", err)
 	}
 
-	r := gin.Default()
-	r.Use(gin.LoggerWithFormatter(logging.CustomLogFormatter), gin.Recovery())
+	gin.SetMode(gin.ReleaseMode)
+	r := gin.New()
+	r.Use(gin.Recovery())
+	r.Use(logging.Middleware)
+
 	routes.SetupAuthRoutes(r, db, cfg)
+
+	logger.Info("All needed connections are made")
+	logger.Infof("🚀 Server is running on port :%s", cfg.Port)
 
 	err = r.Run(":" + cfg.Port)
 	if err != nil {
-		fmt.Println("Failed to start server:", err)
+		logger.Error("Failed to start server:", err)
 		return
 	}
 
