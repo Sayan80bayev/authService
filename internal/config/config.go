@@ -18,7 +18,7 @@ func LoadConfig() (*Config, error) {
 	viper.AutomaticEnv()
 
 	if err := viper.ReadInConfig(); err != nil {
-		logger.Error("Не удалось загрузить config.yaml: %v", err)
+		logger.Errorf("Не удалось загрузить config.yaml: %v", err)
 	}
 
 	var cfg Config

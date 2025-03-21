@@ -57,10 +57,11 @@ func (uc *AuthService) Login(username, password string) (string, error) {
 
 func generateJwtToken(user *models.User) *jwt.Token {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"user_id":   user.ID,
-		"username":  user.Username,
-		"user_role": user.Role,
-		"exp":       time.Now().Add(time.Hour * 24).Unix(),
+		"user_id":     user.ID,
+		"username":    user.Username,
+		"user_role":   user.Role,
+		"user_active": user.Active,
+		"exp":         time.Now().Add(time.Hour * 24).Unix(),
 	})
 	return token
 }
