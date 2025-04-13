@@ -15,6 +15,6 @@ func SetupAuthRoutes(r *gin.Engine, db *gorm.DB, cfg *config.Config) {
 	authHandler := delivery.NewAuthHandler(authService)
 
 	// Роуты для аутентификации
-	r.POST("/api/v1/register", authHandler.Register)
-	r.POST("/api/v1/auth", authHandler.Login)
+	r.POST("/api/v1/auth/register", authHandler.Register)
+	r.POST("/api/v1/auth/login", authHandler.Login)
 }
