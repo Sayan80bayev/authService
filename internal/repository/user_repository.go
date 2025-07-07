@@ -17,8 +17,8 @@ func (r *UserRepository) CreateUser(user *models.User) error {
 	return r.db.Create(user).Error
 }
 
-func (r *UserRepository) GetUserByUsername(username string) (*models.User, error) {
+func (r *UserRepository) GetUserByUsername(email string) (*models.User, error) {
 	var user models.User
-	err := r.db.Where("username = ?", username).First(&user).Error
+	err := r.db.Where("email = ?", email).First(&user).Error
 	return &user, err
 }

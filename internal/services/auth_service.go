@@ -20,14 +20,14 @@ func NewAuthService(userRepo *repository.UserRepository, jwtKey string) *AuthSer
 	return &AuthService{userRepo, []byte(jwtKey)}
 }
 
-func (uc *AuthService) Register(username, password string) (string, error) {
+func (uc *AuthService) Register(email, password string) (string, error) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return "", err
 	}
 
 	user := &models.User{
-		Username: username,
+		Email:    email,
 		Password: string(hashedPassword),
 	}
 	err = uc.userRepo.CreateUser(user)
@@ -40,8 +40,8 @@ func (uc *AuthService) Register(username, password string) (string, error) {
 	return token.SignedString(uc.jwtKey)
 }
 
-func (uc *AuthService) Login(username, password string) (string, error) {
-	user, err := uc.userRepo.GetUserByUsername(username)
+func (uc *AuthService) Login(email, password string) (string, error) {
+	user, err := uc.userRepo.GetUserByUsername(email)
 	if err != nil {
 		return "", errors.New("invalid credentials")
 	}
@@ -58,7 +58,7 @@ func (uc *AuthService) Login(username, password string) (string, error) {
 func generateJwtToken(user *models.User) *jwt.Token {
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"user_id":     user.ID,
-		"username":    user.Username,
+		"email":       user.Email,
 		"user_role":   user.Role,
 		"user_active": user.Active,
 		"exp":         time.Now().Add(time.Hour * 24).Unix(),

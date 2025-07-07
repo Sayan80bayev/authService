@@ -1,11 +1,13 @@
 package models
 
-import "gorm.io/gorm"
+import (
+	"gorm.io/gorm"
+)
 
 type User struct {
 	gorm.Model
-	Username string `gorm:"unique;not null" json:"username"`
+	Email    string `gorm:"unique;not null" json:"email" validate:"required,email"`
 	Password string `json:"password"`
-	Role     Role   `json:"role" gorm:"not null default:'USER'"`
+	Role     Role   `json:"role" gorm:"not null;default:'USER'"`
 	Active   bool   `json:"active" gorm:"default:true"`
 }

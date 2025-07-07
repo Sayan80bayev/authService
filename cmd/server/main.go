@@ -2,11 +2,12 @@ package main
 
 import (
 	"authService/internal/config"
+	"authService/internal/models" // 👈 Import your models here
 	"authService/internal/routes"
 	"authService/pkg/logging"
-	"gorm.io/driver/postgres"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
@@ -19,9 +20,19 @@ func main() {
 		return
 	}
 
+	logger.Info(cfg.DatabaseURL)
+
 	db, err := gorm.Open(postgres.Open(cfg.DatabaseURL), &gorm.Config{})
 	if err != nil {
-		logger.Error("Ошибка подключения к базе данных:", err)
+		logger.Error("Could not connect to db:", err)
+		return
+	}
+
+	if err := db.AutoMigrate(
+		&models.User{},
+	); err != nil {
+		logger.Error("Failed to run migrations:", err)
+		return
 	}
 
 	gin.SetMode(gin.ReleaseMode)
@@ -39,5 +50,4 @@ func main() {
 		logger.Error("Failed to start server:", err)
 		return
 	}
-
 }
