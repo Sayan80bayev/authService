@@ -5,7 +5,7 @@ import (
 	"authService/internal/models" // 👈 Import your models here
 	"authService/internal/routes"
 	"authService/pkg/logging"
-
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -16,7 +16,7 @@ var logger = logging.GetLogger()
 func main() {
 	cfg, err := config.LoadConfig()
 	if err != nil {
-		logger.Error("Error loading config:", err)
+		logger.Error("Error loading corsConfig:", err)
 		return
 	}
 
@@ -38,6 +38,15 @@ func main() {
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.New()
 	r.Use(gin.Recovery())
+
+	corsConfig := cors.DefaultConfig()
+	corsConfig.AllowAllOrigins = true
+	corsConfig.AllowMethods = []string{"GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"}
+	corsConfig.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Authorization"}
+	corsConfig.ExposeHeaders = []string{"Content-Length"}
+	corsConfig.AllowCredentials = true
+
+	r.Use(cors.New(corsConfig))
 	r.Use(logging.Middleware)
 
 	routes.SetupAuthRoutes(r, db, cfg)
