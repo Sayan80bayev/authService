@@ -50,12 +50,12 @@ func (h *AuthHandler) Register(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Validation failed", "details": err.Error()})
 		return
 	}
-
+	// Регистрируем пользователя через сервис
 	if _, err := h.authService.Register(req.Email, req.Password); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create user"})
 		return
 	}
-
+	// Возвращаем успешный ответ
 	c.JSON(http.StatusCreated, gin.H{"message": "User registered successfully"})
 }
 
@@ -73,12 +73,12 @@ func (h *AuthHandler) Login(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid JSON"})
 		return
 	}
-
+	// Валидируем данные (email и пароль не должны быть пустыми)
 	if err := h.validator.Struct(req); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Validation failed", "details": err.Error()})
 		return
 	}
-
+	// Проверяем данные пользователя через сервис
 	token, err := h.authService.Login(req.Email, req.Password)
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid credentials"})
